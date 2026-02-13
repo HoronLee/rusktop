@@ -5,3 +5,5 @@ edition.workspace = true
 
 [dependencies]
 rusktop-core.workspace = true
+gpui.workspace = true
+gpui-component.workspace = true
