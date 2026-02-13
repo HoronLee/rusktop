@@ -1,0 +1,11 @@
+example/
+
+# AI Tools
+.claude/
+.sisyphus/
+.omc/
+
+# Project
+target/
+
+.DS_Store

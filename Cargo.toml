@@ -1,0 +1,13 @@
+[workspace]
+resolver = "3"
+members = ["crates/rusktop-core", "crates/rusktop-ui", "crates/rusktop-app"]
+
+default-members = ["crates/rusktop-app"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+
+[workspace.dependencies]
+rusktop-core = { path = "crates/rusktop-core" }
+rusktop-ui = { path = "crates/rusktop-ui" }

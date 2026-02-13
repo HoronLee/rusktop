@@ -1,0 +1,8 @@
+[package]
+name = "rusktop-app"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+rusktop-core.workspace = true
+rusktop-ui.workspace = true
