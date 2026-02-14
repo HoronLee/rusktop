@@ -1,0 +1,51 @@
+[package]
+name = "lug"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+authors = ["HoronLee <horonlee@foxmail.com>"]
+description = "Opinionated logging wrapper for Rust, inspired by Zap/Kratos"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/HoronLee/rusktop"
+keywords = ["logging", "tracing", "structured-logging"]
+categories = ["development-tools::debugging"]
+
+[dependencies]
+# 核心日志框架
+tracing = "0.1.44"
+tracing-subscriber = { version = "0.3.22", features = ["env-filter", "fmt", "json", "chrono"] }
+tracing-appender = "0.2.4"
+
+# 工具库
+serde = { version = "1.0", features = ["derive"] }
+thiserror = "2.0"
+chrono = { version = "0.4", features = ["serde"] }
+
+# 可选集成
+sea-orm = { version = "1.1", optional = true, features = ["sqlx-postgres", "runtime-tokio-rustls"] }
+
+[dev-dependencies]
+tokio = { version = "1", features = ["full", "rt-multi-thread", "macros"] }
+tempfile = "3"
+serde_json = "1.0"
+
+[features]
+default = []
+sea-orm-integration = ["sea-orm"]
+
+[[example]]
+name = "basic"
+path = "examples/basic.rs"
+
+[[example]]
+name = "module_modes"
+path = "examples/module_modes.rs"
+
+[[example]]
+name = "production"
+path = "examples/production.rs"
+
+[[example]]
+name = "sea_orm_example"
+path = "examples/sea_orm.rs"
+required-features = ["sea-orm-integration"]
