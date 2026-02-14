@@ -18,7 +18,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     configure_sea_orm(&mut opt, "database/data/myapp");
 
     // Connect to database
-    let db = Database::connect(opt).await?;
+    let _db = Database::connect(opt).await?;
 
     println!("✅ Connected to database with logging enabled");
     println!("💡 Set RUST_LOG=sqlx=debug to see SQL queries\n");
