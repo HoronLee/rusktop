@@ -34,8 +34,8 @@ default = []
 sea-orm-integration = ["sea-orm"]
 
 [[example]]
-name = "basic"
-path = "examples/basic.rs"
+name = "lug_basic"
+path = "examples/lug_basic.rs"
 
 [[example]]
 name = "module_modes"

@@ -313,7 +313,7 @@ RUST_LOG=sqlx=debug cargo run
 
 ```bash
 # 基础使用
-cargo run -p lug --example basic
+cargo run -p lug --example lug_basic
 
 # 三种模块标签模式对比
 cargo run -p lug --example module_modes

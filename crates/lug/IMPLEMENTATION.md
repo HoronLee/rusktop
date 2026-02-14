@@ -102,7 +102,7 @@ fn main() {
 
 ```bash
 # 基础示例
-cargo run -p lug --example basic
+cargo run -p lug --example lug_basic
 
 # 模块标签模式对比
 cargo run -p lug --example module_modes

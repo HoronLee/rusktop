@@ -173,14 +173,14 @@ Config::new()
 
 See the [`examples/`](examples/) directory for more:
 
-- [`basic.rs`](examples/basic.rs) - Basic configuration loading
+- [`konfig_basic.rs`](examples/konfig_basic.rs) - Basic configuration loading
 - [`env_override.rs`](examples/env_override.rs) - Environment variable override
 - [`debug.rs`](examples/debug.rs) - Debug environment variables
 
 Run examples:
 
 ```bash
-cargo run --example basic
+cargo run --example konfig_basic
 APP_SERVER_PORT=9000 cargo run --example env_override
 ```
 

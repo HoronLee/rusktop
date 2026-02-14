@@ -51,7 +51,7 @@ Run examples to verify functionality:
 
 ```bash
 # Basic usage (colored terminal output)
-cargo run -p lug --example basic
+cargo run -p lug --example lug_basic
 
 # Module tagging patterns demonstration
 cargo run -p lug --example module_modes

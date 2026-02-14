@@ -181,7 +181,7 @@ Run the examples to see lug in action:
 
 ```bash
 # Basic usage
-cargo run --example basic
+cargo run --example lug_basic
 
 # Module tagging patterns
 cargo run --example module_modes

@@ -33,7 +33,7 @@ cargo test --all-features
 cargo build --release
 
 # Run examples
-cargo run --example basic
+cargo run --example konfig_basic
 TEST_PORT=9000 cargo run --example debug
 APP_SERVER_PORT=9000 cargo run --example env_override
 ```
@@ -118,7 +118,7 @@ Located in `tests/integration.rs`:
 ### Examples as Tests
 Run examples to verify functionality:
 ```bash
-cargo run --example basic           # Should load from config.toml
+cargo run --example konfig_basic           # Should load from config.toml
 cargo run --example env_override    # Should show env var override
 TEST_PORT=9000 cargo run --example debug  # Should output port=9000
 ```
