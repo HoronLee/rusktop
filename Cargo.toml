@@ -1,6 +1,6 @@
 [workspace]
 resolver = "3"
-members = ["crates/rusktop-core", "crates/rusktop-ui", "crates/rusktop-app", "crates/konfig", "crates/lug"]
+members = ["crates/rusktop-core", "crates/rusktop-ui/", "crates/rusktop-app", "crates/rusktop-web", "crates/konfig", "crates/lug"]
 
 default-members = ["crates/rusktop-app"]
 

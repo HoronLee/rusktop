@@ -5174,6 +5174,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "rusktop-web"
+version = "0.1.0"
+dependencies = [
+ "rusktop-core",
+]
+
+[[package]]
 name = "rust-embed"
 version = "8.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
