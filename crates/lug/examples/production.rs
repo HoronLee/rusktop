@@ -1,7 +1,6 @@
 //! Production environment configuration with file logging and rotation.
 
 use lug::{Environment, FileConfig, Level, LugConfig};
-use std::path::PathBuf;
 use std::thread;
 use std::time::Duration;
 
