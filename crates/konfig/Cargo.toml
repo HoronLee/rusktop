@@ -1,0 +1,32 @@
+[package]
+name = "konfig"
+version = "0.1.0"
+edition = "2024"
+authors = ["HoronLee <horonlee@foxmail.com>"]
+description = "A flexible configuration management library with support for files, environment variables, and defaults"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/HoronLee/konfig"
+keywords = ["config", "configuration", "settings", "toml"]
+categories = ["config", "development-tools"]
+rust-version = "1.85"
+
+[dependencies]
+# Core serialization framework
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.149"
+thiserror = "2.0.18"
+
+# TOML support (enabled by default)
+toml = { version = "1.0.1", optional = true }
+
+# YAML support (optional, using maintained fork)
+serde_yaml_ng = { version = "0.10", optional = true }
+
+[dev-dependencies]
+tempfile = "3.0"
+
+[features]
+default = ["toml"]
+toml = ["dep:toml"]
+yaml = ["dep:serde_yaml_ng"]
+all-formats = ["toml", "yaml"]
