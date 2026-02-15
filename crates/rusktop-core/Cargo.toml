@@ -4,4 +4,7 @@ version.workspace = true
 edition.workspace = true
 
 [dependencies]
-# 核心层不依赖 gpui，保持业务逻辑独立
+# 核心层不依赖 gpui/serde，保持业务逻辑独立
+sea-orm.workspace = true
+async-trait.workspace = true
+tracing.workspace = true

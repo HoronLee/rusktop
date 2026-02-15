@@ -2,12 +2,6 @@
 name = "konfig"
 version = "0.1.0"
 edition = "2024"
-authors = ["HoronLee <horonlee@foxmail.com>"]
-description = "A flexible configuration management library with support for files, environment variables, and defaults"
-license = "MIT OR Apache-2.0"
-repository = "https://github.com/HoronLee/konfig"
-keywords = ["config", "configuration", "settings", "toml"]
-categories = ["config", "development-tools"]
 rust-version = "1.85"
 
 [dependencies]

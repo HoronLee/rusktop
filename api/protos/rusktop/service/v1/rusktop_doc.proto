@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+package rusktop.service.v1;
+
+import "gnostic/openapi/v3/annotations.proto";
+
+option go_package = "github.com/horonlee/rusktop/api/gen/go/rusktop/service/v1;rusktopv1";
+
+// OpenAPI 文档配置
+option (gnostic.openapi.v3.document) = {
+  info: {
+    title: "Rusktop API"
+    version: "1.0"
+    description: "Rusktop 微服务 API 文档"
+    contact: {
+      name: "Rusktop Team"
+      url: "https://github.com/horonlee/rusktop"
+    }
+    license: {
+      name: "MIT License"
+      url: "https://github.com/horonlee/rusktop/blob/main/LICENSE"
+    }
+  }
+
+  components: {
+    security_schemes: {
+      additional_properties: [
+        {
+          name: "BearerAuth"
+          value: {
+            security_scheme: {
+              type: "http"
+              scheme: "bearer"
+              bearer_format: "JWT"
+              description: "JWT 认证令牌"
+            }
+          }
+        }
+      ]
+    }
+
+    schemas: {
+      additional_properties: [
+        {
+          name: "ErrorResponse"
+          value: {
+            schema: {
+              type: "object"
+              description: "通用错误响应"
+              properties: {
+                additional_properties: [
+                  {
+                    name: "code"
+                    value: {
+                      schema: {
+                        type: "number"
+                        format: "int32"
+                        description: "错误码"
+                      }
+                    }
+                  },
+                  {
+                    name: "message"
+                    value: {
+                      schema: {
+                        type: "string"
+                        description: "错误消息"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+};

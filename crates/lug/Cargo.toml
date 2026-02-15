@@ -3,12 +3,6 @@ name = "lug"
 version = "0.1.0"
 edition = "2024"
 rust-version = "1.85"
-authors = ["HoronLee <horonlee@foxmail.com>"]
-description = "Opinionated logging wrapper for Rust, inspired by Zap/Kratos"
-license = "MIT OR Apache-2.0"
-repository = "https://github.com/HoronLee/rusktop"
-keywords = ["logging", "tracing", "structured-logging"]
-categories = ["development-tools::debugging"]
 
 [dependencies]
 # 核心日志框架

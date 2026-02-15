@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package rusktop.service.v1;
+
+import "google/api/annotations.proto";
+import "user/service/v1/user.proto";
+
+option go_package = "github.com/horonlee/rusktop/api/gen/go/rusktop/service/v1;rusktopv1";
+
+// User HTTP Service - For Axum REST API
+service UserService {
+  // Create a new user
+  rpc CreateUser(user.service.v1.CreateUserRequest) returns (user.service.v1.CreateUserResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/users"
+      body: "*"
+    };
+  }
+
+  // Get user by ID
+  rpc GetUser(user.service.v1.GetUserRequest) returns (user.service.v1.GetUserResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/users/{id}"
+    };
+  }
+
+  // List all users
+  rpc ListUsers(user.service.v1.ListUsersRequest) returns (user.service.v1.ListUsersResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/users"
+    };
+  }
+
+  // Update user
+  rpc UpdateUser(user.service.v1.UpdateUserRequest) returns (user.service.v1.UpdateUserResponse) {
+    option (google.api.http) = {
+      put: "/api/v1/users/{id}"
+      body: "*"
+    };
+  }
+
+  // Delete user
+  rpc DeleteUser(user.service.v1.DeleteUserRequest) returns (user.service.v1.DeleteUserResponse) {
+    option (google.api.http) = {
+      delete: "/api/v1/users/{id}"
+    };
+  }
+}

@@ -1,0 +1,26 @@
+version: v2
+
+clean: false
+
+managed:
+  enabled: true
+
+  disable:
+    - module: buf.build/googleapis/googleapis
+    - module: buf.build/bufbuild/protovalidate
+    - module: buf.build/gnostic/gnostic
+
+inputs:
+  - directory: protos
+    paths:
+      - protos/rusktop/service/v1
+
+plugins:
+  - local: protoc-gen-openapi
+    out: openapi/v1
+    opt:
+      - naming=json
+      - depth=2
+      - enum_type=string
+      - fq_schema_naming=false
+      - default_response=true
