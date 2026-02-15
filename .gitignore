@@ -8,4 +8,6 @@ example/
 # Project
 target/
 
+rusktop.db
+
 .DS_Store
