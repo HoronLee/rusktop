@@ -2,9 +2,6 @@ use std::net::SocketAddr;
 
 use clap::{Parser, Subcommand};
 
-mod config;
-use config::AppConfig;
-
 #[derive(Parser)]
 #[command(name = "rusktop")]
 #[command(about = "Rusktop - Dual-mode Rust application")]
@@ -25,7 +22,7 @@ enum Mode {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let mut config: AppConfig = konfig::Config::new()
+    let mut config: rusktop_core::AppConfig = konfig::Config::new()
         .env_prefix("RUSKTOP")
         .file("config.toml")
         .load()?;
@@ -41,18 +38,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
 
-    let log_level = match config.log.level.as_str() {
-        "debug" => lug::Level::Debug,
-        "warn" => lug::Level::Warn,
-        "error" => lug::Level::Error,
-        "trace" => lug::Level::Trace,
-        _ => lug::Level::Info,
-    };
-
     lug::init(lug::LugConfig {
-        env: lug::Environment::Dev,
-        level: log_level,
-        file: None,
+        env: config.log.env,
+        level: config.log.level,
+        file: config.log.file.clone(),
     })?;
 
     match cli.mode {
@@ -60,7 +49,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             #[cfg(feature = "ui")]
             {
                 tracing::info!("Starting UI mode");
-                start_ui();
+                start_ui(config);
             }
             #[cfg(not(feature = "ui"))]
             {
@@ -73,7 +62,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             tracing::info!("Starting Web mode");
             let addr: SocketAddr =
                 format!("{}:{}", config.server.host, config.server.port).parse()?;
-            rusktop_web::run(&config.database.url, addr).await?;
+            rusktop_core::run(&config.database.url, addr).await?;
         }
     }
 
@@ -81,6 +70,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 #[cfg(feature = "ui")]
-fn start_ui() {
-    rusktop_ui::run();
+fn start_ui(config: rusktop_core::AppConfig) {
+    rusktop_ui::run(config);
 }

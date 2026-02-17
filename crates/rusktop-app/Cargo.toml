@@ -13,7 +13,6 @@ ui = ["dep:rusktop-ui"]
 [dependencies]
 rusktop-core.workspace = true
 rusktop-ui = { workspace = true, optional = true }
-rusktop-web.workspace = true
 clap.workspace = true
 konfig.workspace = true
 lug.workspace = true

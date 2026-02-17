@@ -6,4 +6,12 @@ port = 8080
 url = "sqlite:./rusktop.db?mode=rwc"
 
 [log]
-level = "dev"
+env = "prod"
+level = "debug"
+
+[log.file]
+path = "logs/rusktop.log"
+max_size_mb = 10
+max_backups = 5
+max_age_days = 7
+compress = false

@@ -14,30 +14,39 @@ Rusktop 是一个双模式 Rust 应用程序：
 ```
 crates/
 ├── rusktop-app      # 应用程序入口点（CLI，双模式调度器）
-├── rusktop-core     # 纯业务逻辑（entity、data、biz 层）
+├── rusktop-core     # 业务逻辑 + Web 服务（data、biz、service、server、migration）
 ├── rusktop-ui       # GPUI 桌面 UI 组件
 │   ├── views/       # UI 视图组件（可复用）
 │   └── windows/     # 窗口配置和管理
-├── rusktop-web      # Axum/Tonic Web 服务
 ├── konfig           # 配置管理库
 └── lug              # 结构化日志包装器
 ```
 
-#### rusktop-ui 目录结构
+### rusktop-core 目录结构
 
 ```
-rusktop-ui/src/
-├── lib.rs           # 模块导出
-├── views/           # 视图组件（实现 Render trait）
-│   ├── mod.rs
-│   └── web_service.rs  # Web 服务控制视图
-└── windows/         # 窗口管理
-    ├── mod.rs
-    └── root.rs      # 根窗口配置
+rusktop-core/src/
+├── lib.rs           # 模块导出 + run() 入口
+├── web_service.rs   # Web 服务状态/配置类型
+├── data/            # 数据层
+│   ├── data.rs      # Data trait, init_db
+│   ├── entity/      # Persistent Objects (Sea-ORM 模型)
+│   │   └── user.rs
+│   └── user.rs      # UserRepository trait + impl
+├── biz/             # 业务逻辑层
+│   └── user.rs      # UserUseCase trait + impl
+├── service/         # gRPC/REST 服务实现
+│   └── user_service.rs
+├── server/          # HTTP 服务器
+│   └── http.rs      # Axum 路由 + Swagger
+├── di/              # 依赖注入装配
+│   └── mod.rs
+├── migration/       # Sea-ORM 数据库迁移
+│   └── m20240215_000001_create_users_table.rs
+├── proto/           # Protobuf 生成代码引入
+│   └── mod.rs
+└── auto_schema.rs   # 自动建表工具
 ```
-
-- **views/**：可复用的 UI 组件，包含业务逻辑
-- **windows/**：窗口创建、配置和 Root 包装
 
 ## 构建与测试命令
 
@@ -81,7 +90,6 @@ cargo test
 
 # 测试特定 crate
 cargo test -p rusktop-core
-cargo test -p rusktop-web
 
 # 运行单个测试
 cargo test -p rusktop-core test_name
@@ -145,7 +153,7 @@ use sea_orm::{DbErr, EntityTrait};
 use tokio::runtime::Runtime;
 
 use rusktop_core::biz::UserUseCase;
-use rusktop_core::entity::user;
+use rusktop_core::data::entity::user;
 
 use crate::data::UserRepository;
 use super::config::AppConfig;
@@ -208,12 +216,10 @@ let user = self.use_case
 
 ```rust
 // lib.rs
-pub mod counter;
-pub mod entity;
 pub mod data;
 pub mod biz;
 
-pub use counter::Counter;  // 扁平化常用项
+pub use web_service::{ServiceStatus, WebServiceConfig};  // 扁平化常用项
 ```
 
 模块在父模块中声明一次，然后通过路径访问：
@@ -274,19 +280,21 @@ pub struct UserRepositoryImpl {
 
 严格遵循三层模式：
 
-1. **Core 层**（`rusktop-core`）：纯业务逻辑，无框架依赖
-   - `entity/`：Sea-ORM 模型
+1. **Core 层**（`rusktop-core`）：业务逻辑 + Web 服务
+- `data/entity/`：Sea-ORM 模型（Persistent Objects）
    - `data/`：仓储 trait 和实现
    - `biz/`：用例 trait 和业务逻辑
+   - `service/`：gRPC/REST 服务实现
+   - `server/`：HTTP 服务器（Axum 路由）
+   - `migration/`：数据库迁移
+   - `di/`：依赖注入装配
 
-2. **UI/Web 层**：框架特定实现
-   - `rusktop-ui`：GPUI 组件，封装所有 GPUI 框架细节
-   - `rusktop-web`：Axum 路由、Tonic 服务
+2. **UI 层**（`rusktop-ui`）：GPUI 桌面 UI 组件，封装所有 GPUI 框架细节
 
 3. **App 层**（`rusktop-app`）：入口点、依赖装配
    - **重要**：App 层不直接依赖 GPUI 或其他 UI 框架
    - UI 模式通过 `rusktop_ui::run()` 启动
-   - Web 模式通过 `rusktop_web::run()` 启动
+   - Web 模式通过 `rusktop_core::run()` 启动
 
 ### 依赖注入
 
@@ -314,20 +322,20 @@ pub struct UserService {
 
 ### 添加新实体
 
-1. 在 `rusktop-core/src/entity/` 中创建实体
-2. 在 `rusktop-web/src/migration/` 中创建迁移
+1. 在 `rusktop-core/src/data/entity/` 中创建 PO 模型
+2. 在 `rusktop-core/src/migration/` 中创建迁移
 3. 在 `rusktop-core/src/data/` 中添加仓储 trait
 4. 在 `rusktop-core/src/biz/` 中添加用例 trait
-5. 在 `rusktop-web/src/service/` 中实现服务
-6. 在 `rusktop-web/src/di/mod.rs` 中装配
+5. 在 `rusktop-core/src/service/` 中实现服务
+6. 在 `rusktop-core/src/di/mod.rs` 中装配
 
 ### 添加新 API 端点
 
 1. 在 `api/protos/` 中定义 proto
 2. 运行 `make openapi` 重新生成 OpenAPI 文档
 3. 运行 `make check-proto-workflow` 进行验证
-4. 在 `rusktop-web/src/service/` 中实现服务
-5. 构建以触发 proto 代码生成：`cargo build -p rusktop-web`
+4. 在 `rusktop-core/src/service/` 中实现服务
+5. 构建以触发 proto 代码生成：`cargo build -p rusktop-core`
 
 ### 调试
 
@@ -336,7 +344,7 @@ pub struct UserService {
 RUST_LOG=debug cargo run
 
 # 为特定模块使用 trace 日志
-RUST_LOG=rusktop_web=trace cargo run
+RUST_LOG=rusktop_core=trace cargo run
 
 # 使用 lug 日志配置
 # 编辑 config.toml：

@@ -3,7 +3,7 @@
 Rusktop 是一个**双模式 Rust 应用程序**：
 - **UI 模式**：使用 GPUI 框架的桌面应用程序
 - **Web 模式**：使用 Axum/Tonic 的 REST/gRPC API 服务器
-- **架构**：三层设计（Core → UI/Web → App）
+- **架构**：三层设计（Core → UI → App）
 
 ## 快速开始
 
@@ -47,7 +47,6 @@ cargo test
 
 # 测试特定 crate
 cargo test -p rusktop-core
-cargo test -p rusktop-web
 
 # 运行单个测试
 cargo test -p rusktop-core test_name
@@ -69,19 +68,22 @@ cargo test -- --nocapture
 │  - 依赖装配                         │
 └─────────────────────────────────────┘
         ↓                     ↓
-┌──────────────────┐  ┌──────────────────┐
-│   rusktop-ui     │  │  rusktop-web     │  框架特定层
-│  - GPUI 组件     │  │  - Axum 路由     │
-│  - 视图渲染      │  │  - Tonic 服务    │
-│  - 事件处理      │  │  - gRPC/REST     │
-└──────────────────┘  └──────────────────┘
+┌──────────────────┐          │
+│   rusktop-ui     │          │  UI 层
+│  - GPUI 组件     │          │
+│  - 视图渲染      │          │
+│  - 事件处理      │          │
+└──────────────────┘          │
         ↓                     ↓
 ┌─────────────────────────────────────┐
-│         rusktop-core                │  业务逻辑层
-│  - entity: Sea-ORM 模型             │
+│         rusktop-core                │  业务逻辑 + Web 服务层
+│  - data/entity: Sea-ORM 模型       │
 │  - data: 仓储 trait 和实现          │
 │  - biz: 用例 trait 和业务逻辑       │
-│  - 纯业务逻辑，无框架依赖           │
+│  - service: gRPC/REST 服务实现      │
+│  - server: HTTP 服务器              │
+│  - migration: 数据库迁移            │
+│  - di: 依赖注入装配                 │
 └─────────────────────────────────────┘
 ```
 
@@ -90,9 +92,8 @@ cargo test -- --nocapture
 ```
 crates/
 ├── rusktop-app      # 应用程序入口点（CLI，双模式调度器）
-├── rusktop-core     # 纯业务逻辑（entity、data、biz 层）
+├── rusktop-core     # 业务逻辑 + Web 服务（data、biz、service、server、migration）
 ├── rusktop-ui       # GPUI 桌面 UI 组件
-├── rusktop-web      # Axum/Tonic Web 服务
 ├── konfig           # 配置管理库
 └── lug              # 结构化日志包装器
 ```
@@ -100,26 +101,28 @@ crates/
 ### 各层职责
 
 #### 1. Core 层（`rusktop-core`）
-- **职责**: 纯业务逻辑，无框架依赖
+- **职责**: 业务逻辑 + Web 服务
 - **包含**: 
-  - `entity/`：Sea-ORM 模型
+  - `data/entity/`：Sea-ORM 模型（Persistent Objects）
   - `data/`：仓储 trait 和实现
   - `biz/`：用例 trait 和业务逻辑
-- **优势**: 可独立测试、可复用于不同前端（UI/Web/CLI）
+  - `service/`：gRPC/REST 服务实现
+  - `server/`：HTTP 服务器（Axum 路由 + Swagger）
+  - `migration/`：Sea-ORM 数据库迁移
+  - `di/`：依赖注入装配
+- **优势**: biz 和 service 紧密结合，符合 DDD 设计
 
-#### 2. UI/Web 层
-- **`rusktop-ui`**: GPUI 桌面 UI 组件
+#### 2. UI 层（`rusktop-ui`）
+- GPUI 桌面 UI 组件
   - `Render` trait 实现
   - GPUI 组件使用
   - 事件处理
-- **`rusktop-web`**: Axum/Tonic Web 服务
-  - REST API 路由
-  - gRPC 服务实现
-  - 数据库迁移
+- 封装所有 GPUI 框架细节
 
 #### 3. App 层（`rusktop-app`）
 - **职责**: 入口点、依赖装配、模式调度
 - **包含**: `main` 函数、窗口配置、全局初始化
+- **重要**: App 层不直接依赖 GPUI 或其他 UI 框架
 
 ## 代码风格指南
 
@@ -141,7 +144,7 @@ use sea_orm::{DbErr, EntityTrait};
 use tokio::runtime::Runtime;
 
 use rusktop_core::biz::UserUseCase;
-use rusktop_core::entity::user;
+use rusktop_core::data::entity::user;
 
 use crate::data::UserRepository;
 use super::config::AppConfig;
@@ -204,12 +207,10 @@ let user = self.use_case
 
 ```rust
 // lib.rs
-pub mod counter;
-pub mod entity;
 pub mod data;
 pub mod biz;
 
-pub use counter::Counter;  // 扁平化常用项
+pub use web_service::{ServiceStatus, WebServiceConfig};  // 扁平化常用项
 ```
 
 模块在父模块中声明一次，然后通过路径访问：
@@ -270,14 +271,16 @@ pub struct UserRepositoryImpl {
 
 严格遵循三层模式：
 
-1. **Core 层**（`rusktop-core`）：纯业务逻辑，无框架依赖
-   - `entity/`：Sea-ORM 模型
+1. **Core 层**（`rusktop-core`）：业务逻辑 + Web 服务
+- `data/entity/`：Sea-ORM 模型（Persistent Objects）
    - `data/`：仓储 trait 和实现
    - `biz/`：用例 trait 和业务逻辑
+   - `service/`：gRPC/REST 服务实现
+   - `server/`：HTTP 服务器（Axum 路由）
+   - `migration/`：数据库迁移
+   - `di/`：依赖注入装配
 
-2. **UI/Web 层**：框架特定实现
-   - `rusktop-ui`：GPUI 组件
-   - `rusktop-web`：Axum 路由、Tonic 服务
+2. **UI 层**（`rusktop-ui`）：GPUI 桌面 UI 组件，封装所有 GPUI 框架细节
 
 3. **App 层**（`rusktop-app`）：入口点、依赖装配
 
@@ -307,20 +310,20 @@ pub struct UserService {
 
 ### 添加新实体
 
-1. 在 `rusktop-core/src/entity/` 中创建实体
-2. 在 `rusktop-web/src/migration/` 中创建迁移
+1. 在 `rusktop-core/src/data/entity/` 中创建 PO 模型
+2. 在 `rusktop-core/src/migration/` 中创建迁移
 3. 在 `rusktop-core/src/data/` 中添加仓储 trait
 4. 在 `rusktop-core/src/biz/` 中添加用例 trait
-5. 在 `rusktop-web/src/service/` 中实现服务
-6. 在 `rusktop-web/src/di/mod.rs` 中装配
+5. 在 `rusktop-core/src/service/` 中实现服务
+6. 在 `rusktop-core/src/di/mod.rs` 中装配
 
 ### 添加新 API 端点
 
 1. 在 `api/protos/` 中定义 proto
 2. 运行 `make openapi` 重新生成 OpenAPI 文档
 3. 运行 `make check-proto-workflow` 进行验证
-4. 在 `rusktop-web/src/service/` 中实现服务
-5. 构建以触发 proto 代码生成：`cargo build -p rusktop-web`
+4. 在 `rusktop-core/src/service/` 中实现服务
+5. 构建以触发 proto 代码生成：`cargo build -p rusktop-core`
 
 ### 添加 UI 功能
 
@@ -349,12 +352,12 @@ pub struct UserService {
 - Proto 源文件：`api/protos/**`
 - 文档型 Proto：`*_doc.proto`（仅用于文档注解，不参与 Rust 业务代码生成）
 - OpenAPI 输出：`api/openapi/v1/openapi.yaml`
-- 构建脚本：`crates/rusktop-web/build.rs`
+- 构建脚本：`crates/rusktop-core/build.rs`
 - Proto workflow 检查脚本：`scripts/check-proto-workflow.sh`
 
 ### build.rs 生成规则
 
-`crates/rusktop-web/build.rs` 采用自动扫描模式：
+`crates/rusktop-core/build.rs` 采用自动扫描模式：
 - 扫描 `api/protos` 下所有 `.proto`
 - 排除 `*_doc.proto`
 - 对结果做稳定排序（避免不同机器顺序不一致）
@@ -374,7 +377,7 @@ pub struct UserService {
    ```bash
    make check-proto-workflow
    make openapi
-   cargo build -p rusktop-web
+   cargo build -p rusktop-core
    ```
 5. 启动并验证接口：
    ```bash
@@ -385,8 +388,8 @@ pub struct UserService {
 
 以下场景需要手工更新：
 - 新增了**新的 proto package**：
-  - `crates/rusktop-web/build.rs` 中 `RestCodegenConfig::package(...)`
-  - `crates/rusktop-web/src/proto/mod.rs` 中 `include_proto!(...)`
+  - `crates/rusktop-core/build.rs` 中 `RestCodegenConfig::package(...)`
+  - `crates/rusktop-core/src/proto/mod.rs` 中 `include_proto!(...)`
 - 新增 HTTP 注解服务但 OpenAPI 路径未覆盖：
   - `api/buf.openapi.gen.yaml` 的 `inputs.paths`
 
@@ -398,7 +401,7 @@ pub struct UserService {
   ```bash
   make check-proto-workflow
   make openapi
-  cargo build -p rusktop-web
+  cargo build -p rusktop-core
   ```
 
 ## GPUI 关键技术点

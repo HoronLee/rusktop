@@ -8,7 +8,7 @@ use crate::proto::user::service::v1::{
     GetUserResponse, ListUsersRequest, ListUsersResponse, UpdateUserRequest, UpdateUserResponse,
     User,
 };
-use rusktop_core::biz::UserUseCase;
+use crate::biz::UserUseCase;
 
 pub struct UserServiceImpl {
     use_case: Arc<dyn UserUseCase>,
@@ -20,7 +20,7 @@ impl UserServiceImpl {
     }
 }
 
-fn model_to_proto(m: &rusktop_core::data::po::user::Model) -> User {
+fn model_to_proto(m: &crate::data::entity::user::Model) -> User {
     User {
         id: m.id,
         name: m.name.clone(),

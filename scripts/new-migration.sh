@@ -16,7 +16,7 @@ fi
 
 DESCRIPTION=$1
 DATE=$(date +%Y%m%d)
-MIGRATION_DIR="crates/rusktop-web/src/migration"
+MIGRATION_DIR="crates/rusktop-core/src/migration"
 
 COUNTER=$(ls -1 ${MIGRATION_DIR}/m${DATE}_*.rs 2>/dev/null | wc -l | tr -d ' ')
 COUNTER=$(printf "%06d" $((COUNTER + 1)))

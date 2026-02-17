@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
-use rusktop_core::biz::{UserUseCase, UserUseCaseImpl};
-use rusktop_core::data::{Data, DataImpl, DataParameters, UserRepository, UserRepositoryImpl};
+use crate::biz::{UserUseCase, UserUseCaseImpl};
+use crate::data::{Data, DataImpl, DataParameters, UserRepository, UserRepositoryImpl};
 
 use crate::service::user_service::UserServiceImpl;
 

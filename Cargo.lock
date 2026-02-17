@@ -5497,7 +5497,6 @@ dependencies = [
  "lug",
  "rusktop-core",
  "rusktop-ui",
- "rusktop-web",
  "serde",
  "tokio",
  "tracing",
@@ -5508,31 +5507,11 @@ name = "rusktop-core"
 version = "0.1.0"
 dependencies = [
  "async-trait",
- "sea-orm",
- "tracing",
-]
-
-[[package]]
-name = "rusktop-ui"
-version = "0.1.0"
-dependencies = [
- "gpui",
- "gpui-component",
- "rusktop-core",
- "rusktop-web",
- "tokio",
-]
-
-[[package]]
-name = "rusktop-web"
-version = "0.1.0"
-dependencies = [
- "async-trait",
  "axum",
+ "lug",
  "prost",
  "prost-build",
  "prost-types",
- "rusktop-core",
  "sea-orm",
  "sea-orm-migration",
  "serde",
@@ -5546,6 +5525,16 @@ dependencies = [
  "tonic-rest-build",
  "tracing",
  "utoipa-swagger-ui",
+]
+
+[[package]]
+name = "rusktop-ui"
+version = "0.1.0"
+dependencies = [
+ "gpui",
+ "gpui-component",
+ "rusktop-core",
+ "tokio",
 ]
 
 [[package]]

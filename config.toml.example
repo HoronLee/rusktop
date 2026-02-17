@@ -1,0 +1,36 @@
+# Rusktop 配置文件示例
+# 复制此文件为 config.toml 并根据需要修改
+
+[server]
+# Web 服务器监听地址
+host = "127.0.0.1"
+# Web 服务器端口
+port = 8080
+
+[database]
+# 数据库连接 URL
+# SQLite: "sqlite:./rusktop.db?mode=rwc"
+# PostgreSQL: "postgres://user:password@localhost/dbname"
+url = "sqlite:./rusktop.db?mode=rwc"
+
+[log]
+# 日志环境模式：
+# - "dev": 开发环境（彩色控制台输出，无文件）
+# - "prod": 生产环境（非彩色控制台 + JSON文件输出）
+# - "test": 测试环境（静默，无输出）
+env = "dev"
+
+# 日志级别：trace, debug, info, warn, error
+level = "info"
+
+# 可选：文件日志配置（仅在 prod 环境生效）
+# 注释掉此部分将只输出到控制台
+[log.file]
+# 日志文件路径
+path = "logs/rusktop.log"
+# 单个文件最大大小（MB）
+max_size_mb = 10
+# 保留的备份文件数量
+max_backups = 5
+# 日志文件最大保留天数
+max_age_days = 30

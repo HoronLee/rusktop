@@ -1,5 +1,7 @@
 use serde::{Deserialize, Serialize};
 
+pub use lug::{Environment, FileConfig, Level};
+
 #[derive(Debug, Deserialize, Serialize, Clone)]
 #[serde(default)]
 pub struct AppConfig {
@@ -17,6 +19,9 @@ impl Default for AppConfig {
         }
     }
 }
+
+unsafe impl Send for AppConfig {}
+unsafe impl Sync for AppConfig {}
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
 #[serde(default)]
@@ -51,13 +56,17 @@ impl Default for DatabaseConfig {
 #[derive(Debug, Deserialize, Serialize, Clone)]
 #[serde(default)]
 pub struct LogConfig {
-    pub level: String,
+    pub env: Environment,
+    pub level: Level,
+    pub file: Option<FileConfig>,
 }
 
 impl Default for LogConfig {
     fn default() -> Self {
         Self {
-            level: "info".to_string(),
+            env: Environment::Dev,
+            level: Level::Info,
+            file: None,
         }
     }
 }

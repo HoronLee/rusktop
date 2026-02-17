@@ -15,7 +15,8 @@ pub struct WebServiceView {
 
 impl WebServiceView {
     pub fn new(window: &mut Window, cx: &mut Context<Self>) -> Self {
-        let config = WebServiceConfig::default();
+        let app_config = &cx.global::<crate::GlobalAppConfig>().0;
+        let config = WebServiceConfig::new(app_config.server.port);
 
         let port_input = cx.new(|cx| InputState::new(window, cx));
 
@@ -50,12 +51,11 @@ impl WebServiceView {
 
                     let server_handle = self.server_handle.clone();
                     let addr = format!("127.0.0.1:{}", port);
+                    let db_url = cx.global::<crate::GlobalAppConfig>().database.url.clone();
 
                     tokio::spawn(async move {
-                        let db_url = "sqlite:./rusktop.db?mode=rwc";
-
                         let handle = tokio::spawn(async move {
-                            if let Err(e) = rusktop_web::run(db_url, addr.parse().unwrap()).await {
+                            if let Err(e) = rusktop_core::run(&db_url, addr.parse().unwrap()).await {
                                 eprintln!("Web server error: {}", e);
                             }
                         });

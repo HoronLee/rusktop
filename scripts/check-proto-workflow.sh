@@ -4,8 +4,8 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PROTO_ROOT="$ROOT_DIR/api/protos"
-BUILD_RS="$ROOT_DIR/crates/rusktop-web/build.rs"
-PROTO_MOD="$ROOT_DIR/crates/rusktop-web/src/proto/mod.rs"
+BUILD_RS="$ROOT_DIR/crates/rusktop-core/build.rs"
+PROTO_MOD="$ROOT_DIR/crates/rusktop-core/src/proto/mod.rs"
 OPENAPI_GEN="$ROOT_DIR/api/buf.openapi.gen.yaml"
 
 if [[ ! -f "$BUILD_RS" || ! -f "$PROTO_MOD" || ! -d "$PROTO_ROOT" ]]; then
@@ -90,7 +90,7 @@ fi
 
 if [[ $AUTO_SCAN_MODE -eq 0 ]]; then
   for rel in "${SERDE_PROTO_LIST[@]}"; do
-    abs="$ROOT_DIR/crates/rusktop-web/$rel"
+    abs="$ROOT_DIR/crates/rusktop-core/$rel"
     if [[ ! -f "$abs" ]]; then
       echo "[ERR] PROTO_FILES entry does not exist: $rel ($BUILD_RS)"
       STATUS=1
@@ -129,16 +129,16 @@ fi
 
 if [[ $STATUS -eq 0 ]]; then
   echo "[OK] Proto workflow checks passed."
-  echo "[OK] If you added a new package, now run: make openapi && cargo build -p rusktop-web"
+  echo "[OK] If you added a new package, now run: make openapi && cargo build -p rusktop-core"
 else
   echo ""
   echo "Proto workflow checks failed."
   echo "Suggested flow for a new package:"
   echo "  1) add .proto under api/protos/..."
-  echo "  2) update crates/rusktop-web/src/proto/mod.rs include_proto!"
-  echo "  3) update crates/rusktop-web/build.rs RestCodegenConfig::package(...)"
+  echo "  2) update crates/rusktop-core/src/proto/mod.rs include_proto!"
+  echo "  3) update crates/rusktop-core/build.rs RestCodegenConfig::package(...)"
   echo "  4) ensure api/buf.openapi.gen.yaml paths cover new HTTP package"
-  echo "  5) run make openapi && cargo build -p rusktop-web"
+  echo "  5) run make openapi && cargo build -p rusktop-core"
 fi
 
 exit $STATUS

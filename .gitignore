@@ -9,5 +9,6 @@ example/
 target/
 
 rusktop.db
+logs/
 
 .DS_Store
