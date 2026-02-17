@@ -3,7 +3,7 @@ use sea_orm::DbErr;
 use std::sync::Arc;
 
 use crate::data::UserRepository;
-use crate::entity::user;
+use crate::data::po::user;
 
 #[async_trait]
 pub trait UserUseCase: Send + Sync {

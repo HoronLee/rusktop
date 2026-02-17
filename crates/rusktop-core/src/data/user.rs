@@ -2,7 +2,7 @@ use async_trait::async_trait;
 use sea_orm::{ActiveModelTrait, DbErr, EntityTrait, Set};
 use std::sync::Arc;
 
-use crate::entity::user;
+use super::po::user;
 use super::data::Data;
 
 #[async_trait]

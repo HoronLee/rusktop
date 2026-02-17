@@ -20,7 +20,7 @@ impl UserServiceImpl {
     }
 }
 
-fn model_to_proto(m: &rusktop_core::entity::user::Model) -> User {
+fn model_to_proto(m: &rusktop_core::data::po::user::Model) -> User {
     User {
         id: m.id,
         name: m.name.clone(),

@@ -1,4 +1,4 @@
-use rusktop_core::entity::user;
+use rusktop_core::data::po::user;
 use sea_orm::{ConnectionTrait, DbErr, DbConn, Schema, sea_query::TableCreateStatement};
 
 pub async fn drop_and_create(db: &DbConn) -> Result<(), DbErr> {
