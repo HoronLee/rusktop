@@ -1,6 +1,6 @@
-pub mod counter;
 pub mod entity;
 pub mod data;
 pub mod biz;
+pub mod web_service;
 
-pub use counter::Counter;
+pub use web_service::{ServiceStatus, WebServiceConfig};

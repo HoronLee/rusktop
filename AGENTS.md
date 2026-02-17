@@ -16,10 +16,28 @@ crates/
 ├── rusktop-app      # 应用程序入口点（CLI，双模式调度器）
 ├── rusktop-core     # 纯业务逻辑（entity、data、biz 层）
 ├── rusktop-ui       # GPUI 桌面 UI 组件
+│   ├── views/       # UI 视图组件（可复用）
+│   └── windows/     # 窗口配置和管理
 ├── rusktop-web      # Axum/Tonic Web 服务
 ├── konfig           # 配置管理库
 └── lug              # 结构化日志包装器
 ```
+
+#### rusktop-ui 目录结构
+
+```
+rusktop-ui/src/
+├── lib.rs           # 模块导出
+├── views/           # 视图组件（实现 Render trait）
+│   ├── mod.rs
+│   └── web_service.rs  # Web 服务控制视图
+└── windows/         # 窗口管理
+    ├── mod.rs
+    └── root.rs      # 根窗口配置
+```
+
+- **views/**：可复用的 UI 组件，包含业务逻辑
+- **windows/**：窗口创建、配置和 Root 包装
 
 ## 构建与测试命令
 
@@ -262,10 +280,13 @@ pub struct UserRepositoryImpl {
    - `biz/`：用例 trait 和业务逻辑
 
 2. **UI/Web 层**：框架特定实现
-   - `rusktop-ui`：GPUI 组件
+   - `rusktop-ui`：GPUI 组件，封装所有 GPUI 框架细节
    - `rusktop-web`：Axum 路由、Tonic 服务
 
 3. **App 层**（`rusktop-app`）：入口点、依赖装配
+   - **重要**：App 层不直接依赖 GPUI 或其他 UI 框架
+   - UI 模式通过 `rusktop_ui::run()` 启动
+   - Web 模式通过 `rusktop_web::run()` 启动
 
 ### 依赖注入
 

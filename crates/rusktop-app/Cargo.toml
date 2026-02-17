@@ -8,14 +8,12 @@ unexpected_cfgs = { level = "warn", check-cfg = ['cfg(feature, values("ui"))'] }
 
 [features]
 default = ["ui"]
-ui = ["dep:rusktop-ui", "dep:gpui", "dep:gpui-component"]
+ui = ["dep:rusktop-ui"]
 
 [dependencies]
 rusktop-core.workspace = true
 rusktop-ui = { workspace = true, optional = true }
 rusktop-web.workspace = true
-gpui = { workspace = true, optional = true }
-gpui-component = { workspace = true, optional = true }
 clap.workspace = true
 konfig.workspace = true
 lug.workspace = true

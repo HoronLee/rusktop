@@ -1,6 +1,9 @@
-use clap::{Parser, Subcommand};
-use serde::{Deserialize, Serialize};
 use std::net::SocketAddr;
+
+use clap::{Parser, Subcommand};
+
+mod config;
+use config::AppConfig;
 
 #[derive(Parser)]
 #[command(name = "rusktop")]
@@ -18,68 +21,6 @@ enum Mode {
         #[arg(long)]
         port: Option<u16>,
     },
-}
-
-#[derive(Debug, Deserialize, Serialize, Clone)]
-#[serde(default)]
-pub struct AppConfig {
-    pub server: ServerConfig,
-    pub database: DatabaseConfig,
-    pub log: LogConfig,
-}
-
-impl Default for AppConfig {
-    fn default() -> Self {
-        Self {
-            server: ServerConfig::default(),
-            database: DatabaseConfig::default(),
-            log: LogConfig::default(),
-        }
-    }
-}
-
-#[derive(Debug, Deserialize, Serialize, Clone)]
-#[serde(default)]
-pub struct ServerConfig {
-    pub host: String,
-    pub port: u16,
-}
-
-impl Default for ServerConfig {
-    fn default() -> Self {
-        Self {
-            host: "127.0.0.1".to_string(),
-            port: 8080,
-        }
-    }
-}
-
-#[derive(Debug, Deserialize, Serialize, Clone)]
-#[serde(default)]
-pub struct DatabaseConfig {
-    pub url: String,
-}
-
-impl Default for DatabaseConfig {
-    fn default() -> Self {
-        Self {
-            url: "sqlite:./rusktop.db?mode=rwc".to_string(),
-        }
-    }
-}
-
-#[derive(Debug, Deserialize, Serialize, Clone)]
-#[serde(default)]
-pub struct LogConfig {
-    pub level: String,
-}
-
-impl Default for LogConfig {
-    fn default() -> Self {
-        Self {
-            level: "info".to_string(),
-        }
-    }
 }
 
 #[tokio::main]
@@ -141,29 +82,5 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 #[cfg(feature = "ui")]
 fn start_ui() {
-    use gpui::*;
-    use rusktop_ui::CounterView;
-
-    let app = Application::new();
-
-    app.run(|cx: &mut App| {
-        gpui_component::init(cx);
-
-        let window_options = WindowOptions {
-            window_bounds: Some(WindowBounds::Windowed(Bounds::centered(
-                None,
-                size(px(400.0), px(300.0)),
-                cx,
-            ))),
-            titlebar: Some(TitlebarOptions {
-                title: Some("Rusktop".into()),
-                appears_transparent: false,
-                ..Default::default()
-            }),
-            ..Default::default()
-        };
-
-        cx.open_window(window_options, |_, cx| cx.new(|_| CounterView::new()))
-            .expect("Failed to open window");
-    });
+    rusktop_ui::run();
 }

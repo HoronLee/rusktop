@@ -5493,8 +5493,6 @@ name = "rusktop-app"
 version = "0.1.0"
 dependencies = [
  "clap",
- "gpui",
- "gpui-component",
  "konfig",
  "lug",
  "rusktop-core",
@@ -5521,6 +5519,8 @@ dependencies = [
  "gpui",
  "gpui-component",
  "rusktop-core",
+ "rusktop-web",
+ "tokio",
 ]
 
 [[package]]
