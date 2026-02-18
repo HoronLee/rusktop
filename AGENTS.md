@@ -45,7 +45,6 @@ rusktop-core/src/
 │   └── m20240215_000001_create_users_table.rs
 ├── proto/           # Protobuf 生成代码引入
 │   └── mod.rs
-└── auto_schema.rs   # 自动建表工具
 ```
 
 ## 构建与测试命令

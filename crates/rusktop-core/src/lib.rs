@@ -1,4 +1,3 @@
-pub mod auto_schema;
 pub mod biz;
 pub mod config;
 pub mod data;
@@ -19,6 +18,10 @@ use std::net::SocketAddr;
 
 pub async fn run(db_url: &str, addr: SocketAddr) -> Result<(), Box<dyn std::error::Error>> {
     let db = init_db(db_url).await?;
+
+    db.get_schema_registry("rusktop_core::data::entity::*")
+        .sync(&db)
+        .await?;
 
     Migrator::up(&db, None).await?;
 
