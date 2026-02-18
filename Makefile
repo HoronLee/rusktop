@@ -94,12 +94,3 @@ fmt-proto:
 	@echo "$(CYAN)Formatting protobuf files...$(RESET)"
 	@cd $(PROTO_DIR) && buf format -w
 	@echo "$(GREEN)✓ Proto files formatted$(RESET)"
-
-new-migration:
-	@if [ -z "$(name)" ]; then \
-		echo "$(YELLOW)Usage: make new-migration name=<description>$(RESET)"; \
-		echo ""; \
-		echo "Example: make new-migration name=add_email_to_users"; \
-		exit 1; \
-	fi
-	@./scripts/new-migration.sh $(name)

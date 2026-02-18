@@ -2,6 +2,10 @@
 
 本指南为在 Rusktop 项目上工作的智能编码助手提供必要信息。
 
+## Language Preference
+
+Always answer in Chinese
+
 ## 项目概览
 
 Rusktop 是一个双模式 Rust 应用程序：
@@ -14,7 +18,7 @@ Rusktop 是一个双模式 Rust 应用程序：
 ```
 crates/
 ├── rusktop-app      # 应用程序入口点（CLI，双模式调度器）
-├── rusktop-core     # 业务逻辑 + Web 服务（data、biz、service、server、migration）
+├── rusktop-core     # 业务逻辑 + Web 服务（data、biz、service、server）
 ├── rusktop-ui       # GPUI 桌面 UI 组件
 │   ├── views/       # UI 视图组件（可复用）
 │   └── windows/     # 窗口配置和管理
@@ -41,8 +45,6 @@ rusktop-core/src/
 │   └── http.rs      # Axum 路由 + Swagger
 ├── di/              # 依赖注入装配
 │   └── mod.rs
-├── migration/       # Sea-ORM 数据库迁移
-│   └── m20240215_000001_create_users_table.rs
 ├── proto/           # Protobuf 生成代码引入
 │   └── mod.rs
 ```
@@ -125,9 +127,6 @@ make openapi
 
 # 检查 proto 工作流一致性
 make check-proto-workflow
-
-# 创建新的数据库迁移
-make new-migration name=add_email_to_users
 ```
 
 **注意**：Proto 代码生成通过 `build.rs` 自动完成，无需手动运行生成命令。
@@ -285,7 +284,6 @@ pub struct UserRepositoryImpl {
    - `biz/`：用例 trait 和业务逻辑
    - `service/`：gRPC/REST 服务实现
    - `server/`：HTTP 服务器（Axum 路由）
-   - `migration/`：数据库迁移
    - `di/`：依赖注入装配
 
 2. **UI 层**（`rusktop-ui`）：GPUI 桌面 UI 组件，封装所有 GPUI 框架细节
@@ -322,11 +320,10 @@ pub struct UserService {
 ### 添加新实体
 
 1. 在 `rusktop-core/src/data/entity/` 中创建 PO 模型
-2. 在 `rusktop-core/src/migration/` 中创建迁移
-3. 在 `rusktop-core/src/data/` 中添加仓储 trait
-4. 在 `rusktop-core/src/biz/` 中添加用例 trait
-5. 在 `rusktop-core/src/service/` 中实现服务
-6. 在 `rusktop-core/src/di/mod.rs` 中装配
+2. 在 `rusktop-core/src/data/` 中添加仓储 trait
+3. 在 `rusktop-core/src/biz/` 中添加用例 trait
+4. 在 `rusktop-core/src/service/` 中实现服务
+5. 在 `rusktop-core/src/di/mod.rs` 中装配
 
 ### 添加新 API 端点
 
@@ -355,7 +352,7 @@ level = "debug"  # trace, debug, info, warn, error
 
 - **UI**：`gpui`、`gpui-component`
 - **Web**：`axum`、`tonic`、`tonic-rest`
-- **数据库**：`sea-orm`、`sea-orm-migration`
+- **数据库**：`sea-orm`
 - **异步**：`tokio`、`async-trait`
 - **配置**：`konfig`（workspace）、`serde`
 - **日志**：`lug`（workspace）、`tracing`

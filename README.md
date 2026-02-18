@@ -82,7 +82,6 @@ cargo test -- --nocapture
 │  - biz: 用例 trait 和业务逻辑       │
 │  - service: gRPC/REST 服务实现      │
 │  - server: HTTP 服务器              │
-│  - migration: 数据库迁移            │
 │  - di: 依赖注入装配                 │
 └─────────────────────────────────────┘
 ```
@@ -92,7 +91,7 @@ cargo test -- --nocapture
 ```
 crates/
 ├── rusktop-app      # 应用程序入口点（CLI，双模式调度器）
-├── rusktop-core     # 业务逻辑 + Web 服务（data、biz、service、server、migration）
+├── rusktop-core     # 业务逻辑 + Web 服务（data、biz、service、server）
 ├── rusktop-ui       # GPUI 桌面 UI 组件
 ├── konfig           # 配置管理库
 └── lug              # 结构化日志包装器
@@ -108,7 +107,6 @@ crates/
   - `biz/`：用例 trait 和业务逻辑
   - `service/`：gRPC/REST 服务实现
   - `server/`：HTTP 服务器（Axum 路由 + Swagger）
-  - `migration/`：Sea-ORM 数据库迁移
   - `di/`：依赖注入装配
 - **优势**: biz 和 service 紧密结合，符合 DDD 设计
 
@@ -277,7 +275,6 @@ pub struct UserRepositoryImpl {
    - `biz/`：用例 trait 和业务逻辑
    - `service/`：gRPC/REST 服务实现
    - `server/`：HTTP 服务器（Axum 路由）
-   - `migration/`：数据库迁移
    - `di/`：依赖注入装配
 
 2. **UI 层**（`rusktop-ui`）：GPUI 桌面 UI 组件，封装所有 GPUI 框架细节
@@ -311,11 +308,10 @@ pub struct UserService {
 ### 添加新实体
 
 1. 在 `rusktop-core/src/data/entity/` 中创建 PO 模型
-2. 在 `rusktop-core/src/migration/` 中创建迁移
-3. 在 `rusktop-core/src/data/` 中添加仓储 trait
-4. 在 `rusktop-core/src/biz/` 中添加用例 trait
-5. 在 `rusktop-core/src/service/` 中实现服务
-6. 在 `rusktop-core/src/di/mod.rs` 中装配
+2. 在 `rusktop-core/src/data/` 中添加仓储 trait
+3. 在 `rusktop-core/src/biz/` 中添加用例 trait
+4. 在 `rusktop-core/src/service/` 中实现服务
+5. 在 `rusktop-core/src/di/mod.rs` 中装配
 
 ### 添加新 API 端点
 
@@ -476,7 +472,7 @@ counter.read(cx).value()
 
 - **UI**：`gpui`、`gpui-component`
 - **Web**：`axum`、`tonic`、`tonic-rest`
-- **数据库**：`sea-orm`、`sea-orm-migration`
+- **数据库**：`sea-orm`
 - **异步**：`tokio`、`async-trait`
 - **配置**：`konfig`（workspace）、`serde`
 - **日志**：`lug`（workspace）、`tracing`

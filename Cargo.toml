@@ -18,7 +18,6 @@ axum = "0.8"
 
 # Database
 sea-orm = { version = "2.0.0-rc.32", features = ["sqlx-sqlite", "runtime-tokio-rustls", "macros", "schema-sync", "entity-registry"] }
-sea-orm-migration = { version = "2.0.0-rc.32", features = ["sqlx-sqlite", "runtime-tokio-rustls"] }
 
 # Dependency injection
 shaku = "0.6"

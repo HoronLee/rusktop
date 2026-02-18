@@ -5,7 +5,6 @@ edition.workspace = true
 
 [dependencies]
 sea-orm.workspace = true
-sea-orm-migration.workspace = true
 async-trait.workspace = true
 tracing.workspace = true
 axum.workspace = true

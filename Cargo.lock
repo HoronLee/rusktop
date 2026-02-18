@@ -3356,15 +3356,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "indoc"
-version = "2.0.7"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "79cf5c93f93228cf8efb3ba362535fb11199ac548a09ce117c9b1adc3030d706"
-dependencies = [
- "rustversion",
-]
-
-[[package]]
 name = "inherent"
 version = "1.0.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5532,7 +5523,6 @@ dependencies = [
  "prost-build",
  "prost-types",
  "sea-orm",
- "sea-orm-migration",
  "serde",
  "serde_json",
  "tokio",
@@ -5937,26 +5927,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "sea-orm-cli"
-version = "2.0.0-rc.32"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ccf34b457fb5f13de347eb2dfbbcb28cffe81167790ce469eedc3b4e3b9e8fcc"
-dependencies = [
- "chrono",
- "clap",
- "dotenvy",
- "glob",
- "indoc",
- "regex",
- "sea-schema",
- "sqlx",
- "tokio",
- "tracing",
- "tracing-subscriber",
- "url",
-]
-
-[[package]]
 name = "sea-orm-macros"
 version = "2.0.0-rc.32"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5970,22 +5940,6 @@ dependencies = [
  "sea-bae",
  "syn 2.0.115",
  "unicode-ident",
-]
-
-[[package]]
-name = "sea-orm-migration"
-version = "2.0.0-rc.32"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6273cc737e4cd44eeeb8180fc2e6d21f8cdd2a2eb08a9ed926597def4d444630"
-dependencies = [
- "async-trait",
- "clap",
- "dotenvy",
- "sea-orm",
- "sea-orm-cli",
- "sea-schema",
- "tracing",
- "tracing-subscriber",
 ]
 
 [[package]]
